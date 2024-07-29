@@ -1,5 +1,5 @@
 const express = require('express');
-const mysql = require('mysql');
+const { Pool } = require('pg');
 const bodyParser = require('body-parser');
 const path = require('path');
 const app = express();
@@ -17,14 +17,15 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Database connection
-const db = mysql.createConnection({
+const pool = new Pool({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME
+    database: process.env.DB_NAME,
+    port: 5432, // default PostgreSQL port
 });
 
-db.connect((err) => {
+pool.connect((err) => {
     if (err) throw err;
     console.log('Connected to database');
 });
