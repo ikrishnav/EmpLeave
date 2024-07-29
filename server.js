@@ -3,6 +3,7 @@ const mysql = require('mysql');
 const bodyParser = require('body-parser');
 const path = require('path');
 const app = express();
+require('dotenv').config();
 
 // Middleware for parsing request bodies
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -17,10 +18,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Database connection
 const db = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: '',
-    database: 'EmployeeLeaveDB'
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME
 });
 
 db.connect((err) => {
@@ -37,6 +38,7 @@ app.use('/', userRoutes);
 app.use('/admin', adminRoutes);
 
 // Start the server
-app.listen(3000, () => {
-    console.log('Server running on port 3000');
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+    console.log(`Server running on port ${port}`);
 });
